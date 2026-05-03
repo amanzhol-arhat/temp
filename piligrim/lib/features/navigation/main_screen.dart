@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:piligrim/features/menu/widgets/menu_screen.dart';
 import '../../core/theme.dart';
 import '../../core/constants.dart';
 import 'package:piligrim/features/home/home_screen.dart';
@@ -34,7 +35,7 @@ class _MainScreenState extends State<MainScreen> {
   // Список экранов для отображения в зависимости от выбранной вкладки
   final List<Widget> _screens = const [
     HomeScreen(), // Индекс 0
-    DummyScreen('Меню'), // Индекс 1
+    MenuScreen(), // Индекс 1
     DummyScreen('Корзина'), // Индекс 2
     DummyScreen('Профиль'), // Индекс 3
   ];
