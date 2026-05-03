@@ -1,0 +1,39 @@
+name: piligrim
+description: "A new Flutter project."
+
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.11.5
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_svg: ^2.0.10
+  flutter_riverpod: ^2.4.9 #библиотека управления состоянием (state management) и внедрения зависимостей (DI)
+
+  cupertino_icons: ^1.0.8
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  flutter_lints: ^6.0.0
+
+
+flutter:
+  uses-material-design: true
+
+  # Регистрация шрифтов
+  fonts:
+    - family: Museo Sans
+      fonts:
+        - asset: assets/fonts/MuseoSans-300.ttf
+          weight: 300
+        - asset: assets/fonts/MuseoSans-700.ttf
+          weight: 700
+
+  # Регистрация SVG и других ассетов
+  assets:
+    - assets/svg/
