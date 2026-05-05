@@ -7,6 +7,7 @@ import '../../core/constants.dart';
 import '../../core/widgets/floating_totems_background.dart';
 import 'package:piligrim/features/home/home_screen.dart';
 import 'package:piligrim/features/afisha/afisha_screen.dart';
+import 'package:piligrim/features/profile/profile_screen.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // ЭКРАН-ЗАГЛУШКА
@@ -74,7 +75,7 @@ class MainScreen extends ConsumerWidget {
     const MenuScreen(), // 1 — Меню
     const _DummyScreen('Интерьер'), // 2 — без фона
     const AfishaScreen(), // 3 — Афиша
-    const _DummyScreen('Профиль', withBackground: true), // 4 — атмосферный
+    const ProfileScreen(), // 4 — Профиль
   ];
 
   /// Элементы навигационной панели: путь к иконке + подпись.
