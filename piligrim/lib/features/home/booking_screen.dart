@@ -38,7 +38,7 @@ class _BookingScreenState extends State<BookingScreen> {
           'Герой, ваша заявка принята. Наши проводники свяжутся с вами в ближайшее время.',
           style: TextStyle(
             fontFamily: 'Museo Sans',
-            color: Color(0xFFF2EDE4),
+            color: Color(0xFFFFFFFF),
           ),
         ),
         backgroundColor: Color(0xFF2A2826),
@@ -52,8 +52,8 @@ class _BookingScreenState extends State<BookingScreen> {
 
   @override
   Widget build(BuildContext context) {
-    const backgroundColor = Color(0xFF3D3A38);
-    const textColor = Color(0xFFF2EDE4);
+    const backgroundColor = Color(0xFF2A2826);
+    const textColor = Color(0xFFFFFFFF);
     const accentColor = Color(0xFF7BA5B8);
     const buttonColor = Color(0xFF8B1A1A);
     const fontFamily = 'Museo Sans';

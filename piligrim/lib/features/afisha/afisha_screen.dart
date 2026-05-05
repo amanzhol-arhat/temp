@@ -15,12 +15,12 @@ class AfishaScreen extends ConsumerWidget {
 
     return Scaffold(
       extendBodyBehindAppBar: true,
-      backgroundColor: const Color(0xFF3D3A38),
+      backgroundColor: const Color(0xFF2A2826),
       appBar: AppBar(
         title: const Text(
           'Афиша',
           style: TextStyle(
-            color: Color(0xFFF2EDE4),
+            color: Color(0xFFFFFFFF),
             fontFamily: 'Museo Sans',
             fontWeight: FontWeight.w700,
           ),
@@ -28,7 +28,7 @@ class AfishaScreen extends ConsumerWidget {
         backgroundColor: Colors.transparent,
         elevation: 0,
         centerTitle: true,
-        iconTheme: const IconThemeData(color: Color(0xFFF2EDE4)),
+        iconTheme: const IconThemeData(color: Color(0xFFFFFFFF)),
       ),
       body: Stack(
         children: [
@@ -49,7 +49,7 @@ class AfishaScreen extends ConsumerWidget {
                       SnackBar(
                         content: Text(
                           'Удачного пути, герой! Вы записаны на: ${event.title}',
-                          style: const TextStyle(color: Color(0xFFF2EDE4)),
+                          style: const TextStyle(color: Color(0xFFFFFFFF)),
                         ),
                         backgroundColor: const Color(0xFF2A2826),
                         behavior: SnackBarBehavior.floating,
@@ -84,7 +84,7 @@ class _EventCard extends StatelessWidget {
         color: const Color(0xFF2A2826),
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: const Color(0xFFF2EDE4).withValues(alpha: 0.1),
+          color: const Color(0xFFFFFFFF).withValues(alpha: 0.1),
         ),
         boxShadow: [
           BoxShadow(
@@ -102,7 +102,7 @@ class _EventCard extends StatelessWidget {
           Container(
             height: 180,
             width: double.infinity,
-            color: const Color(0xFF3D3A38),
+            color: const Color(0xFF2A2826),
             child: Center(
               child: SvgPicture.asset(
                 'assets/svg/wheel_totem.svg',
@@ -124,7 +124,7 @@ class _EventCard extends StatelessWidget {
                 Text(
                   event.title,
                   style: const TextStyle(
-                    color: Color(0xFFF2EDE4),
+                    color: Color(0xFFFFFFFF),
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
                     fontFamily: 'Museo Sans',
@@ -145,7 +145,7 @@ class _EventCard extends StatelessWidget {
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
-                    color: const Color(0xFFF2EDE4).withOpacity(0.7),
+                    color: const Color(0xFFFFFFFF).withOpacity(0.7),
                     fontSize: 14,
                     fontFamily: 'Museo Sans',
                   ),
@@ -168,7 +168,7 @@ class _EventCard extends StatelessWidget {
                       Text(
                         event.price!,
                         style: const TextStyle(
-                          color: Color(0xFFF2EDE4),
+                          color: Color(0xFFFFFFFF),
                           fontSize: 14,
                           fontWeight: FontWeight.bold,
                           fontFamily: 'Museo Sans',
@@ -184,7 +184,7 @@ class _EventCard extends StatelessWidget {
                     onPressed: onSignUpPressed,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFF7BA5B8),
-                      foregroundColor: const Color(0xFFF2EDE4),
+                      foregroundColor: const Color(0xFFFFFFFF),
                       elevation: 0,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8),

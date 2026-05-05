@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 // Исходная палитра — единый источник истины для HEX-значений бренда.
 // В виджетах предпочтительно использовать Theme.of(context).colorScheme.* вместо этих констант.
 class AppColors {
-  static const Color earth      = Color(0xFF3D3A38); // Қара жер — фон scaffold → surface
-  static const Color sky        = Color(0xFFF2EDE4); // Ақ аспан — основной текст → onSurface
+  static const Color earth      = Color(0xFF2A2826); // Қара жер — фон scaffold → surface
+  static const Color sky        = Color(0xFFFFFFFF); // Ақ аспан — основной текст → onSurface
   static const Color water      = Color(0xFF7BA5B8); // Мөлдір су — акцент → primary
   static const Color steppe     = Color(0xFFC4956A); // Сары дала — вторичный → secondary
   static const Color fruit      = Color(0xFF8B1A1A); // Піскен жеміс — действие → tertiary

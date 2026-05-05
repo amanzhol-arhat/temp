@@ -15,7 +15,7 @@ class MenuScreen extends ConsumerWidget {
     final dishesAsync = ref.watch(allDishesProvider);
 
     return Scaffold(
-      backgroundColor: const Color(0xFF3D3A38),
+      backgroundColor: const Color(0xFF2A2826),
       body: Stack(
         children: [
           // Основной контент
@@ -35,7 +35,7 @@ class MenuScreen extends ConsumerWidget {
               ),
               error: (err, stack) => Center(
                 key: const ValueKey('error'),
-                child: Text('Ошибка: $err', style: const TextStyle(color: Color(0xFFF2EDE4))),
+                child: Text('Ошибка: $err', style: const TextStyle(color: Color(0xFFFFFFFF))),
               ),
             ),
           ),
@@ -90,7 +90,7 @@ class _ClassicMenuList extends StatelessWidget {
             color: const Color(0xFF2A2826),
             borderRadius: BorderRadius.circular(16),
             border: Border.all(
-              color: const Color(0xFFF2EDE4).withValues(alpha: 0.1),
+              color: const Color(0xFFFFFFFF).withValues(alpha: 0.1),
             ),
             boxShadow: [
               BoxShadow(
@@ -108,12 +108,12 @@ class _ClassicMenuList extends StatelessWidget {
                 width: 80,
                 height: 80,
                 decoration: BoxDecoration(
-                  color: const Color(0xFF3D3A38),
+                  color: const Color(0xFF2A2826),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: const Icon(
                   Icons.restaurant,
-                  color: Color(0xFFF2EDE4),
+                  color: Color(0xFFFFFFFF),
                   size: 30,
                 ),
               ),
@@ -126,7 +126,7 @@ class _ClassicMenuList extends StatelessWidget {
                     Text(
                       dish.name,
                       style: const TextStyle(
-                        color: Color(0xFFF2EDE4),
+                        color: Color(0xFFFFFFFF),
                         fontSize: 18,
                         fontWeight: FontWeight.w700,
                         fontFamily: 'Museo Sans',
@@ -172,13 +172,13 @@ class _SmallTag extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
-        color: const Color(0xFFF2EDE4).withValues(alpha: 0.05),
+        color: const Color(0xFFFFFFFF).withValues(alpha: 0.05),
         borderRadius: BorderRadius.circular(8),
       ),
       child: Text(
         text,
         style: TextStyle(
-          color: const Color(0xFFF2EDE4).withValues(alpha: 0.5),
+          color: const Color(0xFFFFFFFF).withValues(alpha: 0.5),
           fontSize: 12,
           fontWeight: FontWeight.w300,
           fontFamily: 'Museo Sans',

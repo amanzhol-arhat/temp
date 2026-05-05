@@ -375,8 +375,8 @@ class _ParticleWidget extends StatelessWidget {
         // Opacity создает слой композиции (saveLayer), что дает нагрузку на GPU.
         // ColorFilter.mode применяется при отрисовке SVG без дополнительных затрат.
         colorFilter: ColorFilter.mode(
-          // Фирменный цвет неба #F2EDE4 с вычисленной прозрачностью.
-          Color(0xFFF2EDE4).withOpacity(particle.opacity.clamp(0.0, 1.0)),
+          // Чистый белый цвет с вычисленной прозрачностью.
+          const Color(0xFFFFFFFF).withOpacity(particle.opacity.clamp(0.0, 1.0)),
           BlendMode.srcIn,
         ),
       ),

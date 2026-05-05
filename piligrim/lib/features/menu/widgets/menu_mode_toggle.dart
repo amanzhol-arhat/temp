@@ -8,7 +8,7 @@ class MenuModeToggle extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final mode = ref.watch(menuViewModeProvider);
-    const primaryColor = Color(0xFFF2EDE4);
+    const primaryColor = Color(0xFFFFFFFF);
     const accentColor = Color(0xFF7BA5B8);
     const backgroundColor = Color(0xFF2A2826);
 
@@ -55,7 +55,7 @@ class _ToggleItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const primaryColor = Color(0xFFF2EDE4);
+    const primaryColor = Color(0xFFFFFFFF);
     const accentColor = Color(0xFF7BA5B8);
 
     return GestureDetector(

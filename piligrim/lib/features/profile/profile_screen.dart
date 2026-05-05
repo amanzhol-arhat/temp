@@ -17,10 +17,10 @@ class ProfileScreen extends ConsumerWidget {
     final pushNotifier = ref.read(pushSettingsProvider.notifier);
 
     // Цвета из дизайн-системы
-    const backgroundColor = Color(0xFF3D3A38); // Қара жер
+    const backgroundColor = Color(0xFF2A2826); // Қара жер
     const cardColor = Color(0xFF2A2826);       // Тёмный фон контейнеров
     const accentColor = Color(0xFF7BA5B8);     // Мөлдір су (Акцент)
-    const textColor = Color(0xFFF2EDE4);       // Ақ аспан (Светлый текст)
+    const textColor = Color(0xFFFFFFFF);       // Ақ аспан (Светлый текст)
     const fontFamily = 'Museo Sans';
 
     return Scaffold(
@@ -179,7 +179,7 @@ class _NotificationSwitch extends StatelessWidget {
         style: const TextStyle(
           fontFamily: 'Museo Sans',
           fontSize: 14,
-          color: Color(0xFFF2EDE4),
+          color: Color(0xFFFFFFFF),
         ),
       ),
       value: value,

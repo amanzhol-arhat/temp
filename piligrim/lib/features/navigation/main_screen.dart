@@ -103,7 +103,7 @@ class MainScreen extends ConsumerWidget {
             color: const Color(0xFF2A2826),
             border: Border(
               top: BorderSide(
-                color: const Color(0xFFF2EDE4).withValues(alpha: 0.12),
+                color: Colors.white.withValues(alpha: 0.12),
                 width: 1,
               ),
             ),
@@ -162,8 +162,8 @@ class _NavItem extends StatelessWidget {
     // Активный: основной цвет (#7BA5B8 water).
     // Неактивный: Ақ аспан с прозрачностью 40%
     final color = isActive
-        ? const Color(0xFF7BA5B8)
-        : const Color(0xFFF2EDE4).withValues(alpha: 0.4);
+        ? Colors.white
+        : Colors.white.withValues(alpha: 0.4);
 
     return GestureDetector(
       onTap: onTap,

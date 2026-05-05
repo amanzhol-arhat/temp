@@ -14,8 +14,8 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const Scaffold(
-      // Основной фон экрана согласно дизайн-системе (#3D3A38)
-      backgroundColor: Color(0xFF3D3A38),
+      // Основной фон экрана согласно дизайн-системе (#2A2826)
+      backgroundColor: const Color(0xFF2A2826),
 
       // Используем Stack для наложения контента поверх анимированного фона
       body: Stack(
@@ -24,16 +24,18 @@ class HomeScreen extends StatelessWidget {
           FloatingTotemsBackground(),
 
           // Второй слой: Безопасная зона для основного UI
-          SafeArea(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                const Spacer(),
-                const _StatusAndConceptWidget(),
-                const SizedBox(height: 48),
-                const _ActionButtons(),
-                const SizedBox(height: 32),
-              ],
+          Positioned.fill(
+            child: SafeArea(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  const Spacer(),
+                  const _StatusAndConceptWidget(),
+                  const SizedBox(height: 48),
+                  const _ActionButtons(),
+                  const SizedBox(height: 32),
+                ],
+              ),
             ),
           ),
         ],
@@ -48,7 +50,7 @@ class _StatusAndConceptWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const primaryColor = Color(0xFFF2EDE4);
+    const primaryColor = Color(0xFFFFFFFF);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -69,11 +71,11 @@ class _StatusAndConceptWidget extends StatelessWidget {
             'Духовно-гастрономическое путешествие.\nВкус жизни. Путь героя.',
             textAlign: TextAlign.center,
             style: TextStyle(
-              color: const Color(0xFFC4956A),
-              fontSize: 16,
-              fontWeight: FontWeight.w700,
+              color: primaryColor, // #FFFFFF (Ақ аспан)
+              fontSize: 15,
+              fontWeight: FontWeight.w300, // Museo Sans 300 (Light)
               fontFamily: 'Museo Sans',
-              height: 1.5, // Изменено с 1.4 на 1.5 согласно брендбуку
+              height: 1.5,
             ),
           ),
         ),
@@ -85,7 +87,9 @@ class _StatusAndConceptWidget extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
           decoration: BoxDecoration(
             color: primaryColor.withValues(alpha: 0.1),
-            borderRadius: BorderRadius.circular(8), // Изменено с 20 на 8 согласно брендбуку
+            borderRadius: BorderRadius.circular(
+              8,
+            ), // Изменено с 20 на 8 согласно брендбуку
           ),
           child: Row(
             mainAxisSize: MainAxisSize.min,
@@ -95,7 +99,9 @@ class _StatusAndConceptWidget extends StatelessWidget {
                 width: 8,
                 height: 8,
                 decoration: const BoxDecoration(
-                  color: Color(0xFF7BA5B8), // Использован акцентный цвет Мөлдір су, так как зеленый вне палитры
+                  color: Color(
+                    0xFF7BA5B8,
+                  ), // Использован акцентный цвет Мөлдір су, так как зеленый вне палитры
                   shape: BoxShape.circle,
                 ),
               ),
@@ -124,7 +130,7 @@ class _ActionButtons extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     const accentColor = Color(0xFF7BA5B8);
-    const primaryColor = Color(0xFFF2EDE4);
+    const primaryColor = Color(0xFFFFFFFF);
 
     return SizedBox(
       width: 300,
@@ -133,7 +139,7 @@ class _ActionButtons extends ConsumerWidget {
           // Кнопка 1: Забронировать стол (CTA)
           SizedBox(
             width: double.infinity,
-            height: 52,
+            height: 56, // Увеличено для "дыхания"
             child: ElevatedButton(
               onPressed: () {},
               style: ElevatedButton.styleFrom(
@@ -155,12 +161,11 @@ class _ActionButtons extends ConsumerWidget {
             ),
           ),
 
-          const SizedBox(height: 12),
-
+          const SizedBox(height: 16), // Увеличено с 12 до 16
           // Кнопка 2: Меню (Второстепенная)
           SizedBox(
             width: double.infinity,
-            height: 52,
+            height: 56, // Увеличено для "дыхания"
             child: OutlinedButton(
               onPressed: () {
                 // Переключаем на вкладку "Меню" (индекс 1)
@@ -206,4 +211,3 @@ class _ActionButtons extends ConsumerWidget {
     );
   }
 }
-
