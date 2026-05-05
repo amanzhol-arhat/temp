@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
 
-// Raw palette — single source of truth for brand hex values.
-// In widgets, prefer Theme.of(context).colorScheme.* over these constants.
+// Исходная палитра — единый источник истины для HEX-значений бренда.
+// В виджетах предпочтительно использовать Theme.of(context).colorScheme.* вместо этих констант.
 class AppColors {
-  static const Color earth      = Color(0xFF3D3A38); // Қара жер — scaffold bg → surface
-  static const Color sky        = Color(0xFFF2EDE4); // Ақ аспан — main text  → onSurface
-  static const Color water      = Color(0xFF7BA5B8); // Мөлдір су — accent    → primary
-  static const Color steppe     = Color(0xFFC4956A); // Сары дала — secondary → secondary
-  static const Color fruit      = Color(0xFF8B1A1A); // Піскен жеміс — action → tertiary
+  static const Color earth      = Color(0xFF3D3A38); // Қара жер — фон scaffold → surface
+  static const Color sky        = Color(0xFFF2EDE4); // Ақ аспан — основной текст → onSurface
+  static const Color water      = Color(0xFF7BA5B8); // Мөлдір су — акцент → primary
+  static const Color steppe     = Color(0xFFC4956A); // Сары дала — вторичный → secondary
+  static const Color fruit      = Color(0xFF8B1A1A); // Піскен жеміс — действие → tertiary
   static const Color earthDeep  = Color(0xFF2A2826); // Глубокий фон → surfaceContainerLow
 }
 
 class AppTheme {
-  // Seed colour drives ColorScheme.fromSeed() auto-generation. We override
-  // the individual roles below so the output matches the brand palette exactly.
+  // Базовый цвет управляет автогенерацией ColorScheme.fromSeed(). 
+  // Мы переопределяем отдельные роли ниже, чтобы результат точно соответствовал палитре бренда.
   static const Color _seed = AppColors.water;
 
   static ThemeData get darkTheme {
@@ -25,37 +25,37 @@ class AppTheme {
       fontFamily: 'Museo Sans',
       scaffoldBackgroundColor: cs.surface,
 
-      // ── Text scale ──────────────────────────────────────────────────────
+      // ── Масштабирование текста ──────────────────────────────────────────
       textTheme: TextTheme(
-        // Display / Headline — large, bold
+        // Display / Headline — крупный, жирный
         displayLarge:  TextStyle(color: cs.onSurface, fontWeight: FontWeight.w700),
         headlineLarge: TextStyle(color: cs.onSurface, fontWeight: FontWeight.w700),
         headlineMedium:TextStyle(color: cs.onSurface, fontWeight: FontWeight.w700),
-        // Title — card headers, section labels
+        // Title — заголовки карточек, меток разделов
         titleLarge:    TextStyle(color: cs.onSurface, fontWeight: FontWeight.w700),
         titleMedium:   TextStyle(color: cs.onSurface, fontWeight: FontWeight.w700),
         titleSmall:    TextStyle(color: cs.onSurface, fontWeight: FontWeight.w700),
-        // Body — paragraphs, descriptions
+        // Body — параграфы, описания
         bodyLarge:     TextStyle(color: cs.onSurface, fontWeight: FontWeight.w300),
         bodyMedium:    TextStyle(color: cs.onSurface, fontWeight: FontWeight.w300),
         bodySmall:     TextStyle(color: cs.onSurfaceVariant, fontWeight: FontWeight.w300),
-        // Label — buttons, chips, captions
+        // Label — кнопки, чипы, подписи
         labelLarge:    TextStyle(color: cs.onSurface, fontWeight: FontWeight.w700, letterSpacing: 0.1),
         labelMedium:   TextStyle(color: cs.onSurfaceVariant, fontWeight: FontWeight.w300),
         labelSmall:    TextStyle(color: cs.onSurfaceVariant, fontWeight: FontWeight.w300, letterSpacing: 1.2),
       ),
 
-      // ── Cards — M3 shape-medium = 12dp ──────────────────────────────────
+      // ── Карточки — M3 shape-medium = 12dp ───────────────────────────────
       cardTheme: CardThemeData(
         color: cs.surfaceContainerLow,
-        elevation: 0, // M3: elevation via tonal surface, not shadow
+        elevation: 0, // M3: возвышение через тональную поверхность, а не тень
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12),
           side: BorderSide(color: cs.outlineVariant, width: 1),
         ),
       ),
 
-      // ── Filled button — M3 shape-full = stadium ──────────────────────────
+      // ── Заполненная кнопка — M3 shape-full = stadium ─────────────────────
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
           backgroundColor: cs.primary,
@@ -70,7 +70,7 @@ class AppTheme {
         ),
       ),
 
-      // ── Snackbar — inverse surface per M3 spec ───────────────────────────
+      // ── Snackbar — инвертированная поверхность согласно спецификации M3 ───
       snackBarTheme: SnackBarThemeData(
         backgroundColor: cs.inverseSurface,
         contentTextStyle: TextStyle(color: cs.onInverseSurface),
@@ -78,7 +78,7 @@ class AppTheme {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
       ),
 
-      // ── Bottom navigation bar ────────────────────────────────────────────
+      // ── Нижняя панель навигации ─────────────────────────────────────────
       navigationBarTheme: NavigationBarThemeData(
         backgroundColor: cs.surfaceContainerLow,
         indicatorColor: cs.primary.withValues(alpha: 0.15),
@@ -93,7 +93,7 @@ class AppTheme {
   }
 
   static ColorScheme _buildColorScheme() {
-    // Start from seed so Flutter fills any roles we don't override.
+    // Начинаем с базового цвета, чтобы Flutter заполнил все роли, которые мы не переопределяем.
     final base = ColorScheme.fromSeed(
       seedColor: _seed,
       brightness: Brightness.dark,
@@ -118,8 +118,8 @@ class AppTheme {
       tertiaryContainer:   const Color(0xFF4A0D0D), // затемнённый fruit
       onTertiaryContainer: AppColors.sky,
 
-      // ── Surface hierarchy — earth tones ──────────────────────────────────
-      surface:                    AppColors.earth,       // scaffold фон
+      // ── Иерархия поверхностей — земляные тона ───────────────────────────
+      surface:                    AppColors.earth,       // фон scaffold
       onSurface:                  AppColors.sky,
       onSurfaceVariant:           const Color(0xFFCBBFB5), // приглушённый sky
       surfaceContainerLowest:     const Color(0xFF1A1817),
@@ -128,11 +128,11 @@ class AppTheme {
       surfaceContainerHigh:       const Color(0xFF3B3835),
       surfaceContainerHighest:    const Color(0xFF464240),
 
-      // ── Outlines ─────────────────────────────────────────────────────────
-      outline:        const Color(0xFF9D9289), // важные границы (text fields)
-      outlineVariant: const Color(0xFF504B47), // декоративные (dividers, card borders)
+      // ── Контуры ────────────────────────────────────────────────────────
+      outline:        const Color(0xFF9D9289), // важные границы (текстовые поля)
+      outlineVariant: const Color(0xFF504B47), // декоративные (разделители, границы карточек)
 
-      // ── Inverse — для snackbar и контрастных элементов ──────────────────
+      // ── Инверсия — для snackbar и контрастных элементов ─────────────────
       inverseSurface:   AppColors.sky,
       onInverseSurface: AppColors.earth,
       inversePrimary:   const Color(0xFF3E7A90),

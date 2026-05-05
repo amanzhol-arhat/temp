@@ -6,35 +6,35 @@ import '../../core/widgets/floating_totems_background.dart';
 import 'package:piligrim/features/home/home_screen.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
-// PLACEHOLDER SCREEN
+// ЭКРАН-ЗАГЛУШКА
 // ─────────────────────────────────────────────────────────────────────────────
 
-/// Placeholder screen used for tabs that are still under development.
+/// Экран-заглушка для вкладок, которые еще находятся в разработке.
 ///
-/// [withBackground] controls whether the [FloatingTotemsBackground] particle
-/// animation is rendered behind the content.
+/// [withBackground] определяет, будет ли анимированный фон [FloatingTotemsBackground]
+/// отрисовываться за контентом.
 ///
-/// Enable for screens that share the brand's atmospheric "journey" feel:
-///   • Афиша  (Events)  — mystical, event-space tone
-///   • Профиль (Profile) — personal chronicle, "hero's story"
+/// Включайте для экранов, передающих атмосферу «путешествия» бренда:
+///   • Афиша  (Events) — мистический, событийный тон
+///   • Профиль (Profile) — личные хроники, «история героя»
 ///
-/// Disable for neutral content screens (e.g. Интерьер) where the animation
-/// would compete with photo-heavy material.
+/// Отключайте для нейтральных контентных экранов (например, Интерьер), где анимация
+/// будет отвлекать от фото-контента.
 class _DummyScreen extends StatelessWidget {
   const _DummyScreen(
     this.title, {
     this.withBackground = false,
   });
 
-  /// Screen title shown in the centre of the placeholder.
+  /// Заголовок экрана, отображаемый в центре заглушки.
   final String title;
 
-  /// Whether to render [FloatingTotemsBackground] as the bottom layer.
+  /// Нужно ли отрисовывать [FloatingTotemsBackground] в качестве нижнего слоя.
   final bool withBackground;
 
   @override
   Widget build(BuildContext context) {
-    // Centred title — the placeholder content for unfinished screens.
+    // Центрированный заголовок — контент заглушки для незавершенных экранов.
     final body = Center(
       child: Text(
         title,
@@ -43,31 +43,31 @@ class _DummyScreen extends StatelessWidget {
     );
 
     return Scaffold(
-      // Use ColorScheme.surface so the background matches the M3 theme
-      // and is consistent with HomeScreen.
+      // Используем ColorScheme.surface, чтобы фон соответствовал теме M3
+      // и был согласован с HomeScreen.
       backgroundColor: Theme.of(context).colorScheme.surface,
       body: withBackground
-          // Atmospheric variant: particle animation behind placeholder text.
+          // Атмосферный вариант: анимация частиц за текстом заглушки.
           ? Stack(
               children: [
-                // ── Bottom layer: ambient totem animation ─────────────────
-                // IgnorePointer prevents the animation from absorbing taps
-                // intended for content above it.
+                // ── Нижний слой: фоновая анимация тотемов ───────────────────
+                // IgnorePointer предотвращает перехват нажатий анимацией,
+                // предназначенных для контента выше.
                 const IgnorePointer(
                   child: FloatingTotemsBackground(),
                 ),
-                // ── Top layer: screen content ─────────────────────────────
+                // ── Верхний слой: контент экрана ────────────────────────────
                 body,
               ],
             )
-          // Plain variant: no animation, just the scaffold background.
+          // Простой вариант: без анимации, только фон scaffold.
           : body,
     );
   }
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// MAIN SCREEN (tab host)
+// ГЛАВНЫЙ ЭКРАН (хост вкладок)
 // ─────────────────────────────────────────────────────────────────────────────
 
 class MainScreen extends StatefulWidget {
@@ -78,30 +78,30 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
-  /// Index of the currently visible tab (0-based).
+  /// Индекс текущей видимой вкладки (начиная с 0).
   int _currentIndex = 0;
 
-  /// The five tab screens mounted inside [IndexedStack].
+  /// Пять экранов вкладок, размещенных внутри [IndexedStack].
   ///
-  /// [IndexedStack] keeps all children in memory, so each screen preserves
-  /// its state (scroll position, animation) when switching tabs.
+  /// [IndexedStack] сохраняет всех детей в памяти, поэтому каждый экран сохраняет
+  /// свое состояние (позицию прокрутки, анимации) при переключении вкладок.
   ///
-  /// FloatingTotemsBackground screens:
-  ///   ✔ Главная   — background managed inside HomeScreen itself
-  ///   ✘ Меню      — full-screen video cards; background not applicable
-  ///   ✘ Интерьер  — photo-heavy content; plain background
-  ///   ✔ Афиша     — events space "АУА"; atmospheric tone
-  ///   ✔ Профиль   — hero's chronicle; atmospheric tone
+  /// Использование FloatingTotemsBackground:
+  ///   ✔ Главная   — фон управляется внутри самого HomeScreen
+  ///   ✘ Меню      — полноэкранные видео-карточки; фон не применим
+  ///   ✘ Интерьер  — насыщенный фото-контент; простой фон
+  ///   ✔ Афиша     — пространство событий «АУА»; атмосферный тон
+  ///   ✔ Профиль   — хроники героя; атмосферный тон
   static const List<Widget> _screens = [
     HomeScreen(),                                           // 0 — Главная
     MenuScreen(),                                          // 1 — Меню
-    _DummyScreen('Интерьер'),                              // 2 — no background
-    _DummyScreen('Афиша',   withBackground: true),         // 3 — atmospheric
-    _DummyScreen('Профиль', withBackground: true),         // 4 — atmospheric
+    _DummyScreen('Интерьер'),                              // 2 — без фона
+    _DummyScreen('Афиша',   withBackground: true),         // 3 — атмосферный
+    _DummyScreen('Профиль', withBackground: true),         // 4 — атмосферный
   ];
 
-  /// Navigation bar items: icon asset path + display label.
-  /// Order must match [_screens].
+  /// Элементы навигационной панели: путь к иконке + подпись.
+  /// Порядок должен совпадать с [_screens].
   static const List<({String asset, String label})> _navItems = [
     (asset: AppAssets.totemStar,  label: 'Главная'),
     (asset: AppAssets.totemBird,  label: 'Меню'),
@@ -115,22 +115,22 @@ class _MainScreenState extends State<MainScreen> {
     final cs = Theme.of(context).colorScheme;
 
     return Scaffold(
-      // IndexedStack renders all children but shows only the active one.
-      // This preserves each screen's state (scroll, animation tickers, etc.)
-      // across tab switches without reinitialising widgets.
+      // IndexedStack отрисовывает всех детей, но показывает только активного.
+      // Это сохраняет состояние каждого экрана (прокрутку, тикеры анимации и т.д.)
+      // при переключении вкладок без переинициализации виджетов.
       body: IndexedStack(index: _currentIndex, children: _screens),
 
-      // ── Custom bottom navigation bar ─────────────────────────────────────
-      // Built from scratch with totem SVG icons instead of Flutter's default
-      // NavigationBar, per Piligrim brand spec (no standard tab bar shapes).
+      // ── Кастомная нижняя панель навигации ───────────────────────────────
+      // Построена с нуля с использованием SVG-иконок тотемов вместо стандартного
+      // NavigationBar от Flutter, согласно спецификации бренда Piligrim.
       bottomNavigationBar: Container(
         padding: const EdgeInsets.only(bottom: 24, top: 12),
         decoration: BoxDecoration(
-          // surfaceContainerLow matches the theme's deep earth tone (#2A2826).
+          // surfaceContainerLow соответствует глубокому тону земли темы (#2A2826).
           color: cs.surfaceContainerLow,
           border: Border(
             top: BorderSide(
-              // Subtle top divider — brand spec: rgba(#F2EDE4, 0.08)
+              // Тонкий верхний разделитель — спецификация бренда: rgba(#F2EDE4, 0.08)
               color: cs.onSurface.withValues(alpha: 0.08),
               width: 1,
             ),
@@ -144,7 +144,7 @@ class _MainScreenState extends State<MainScreen> {
               asset:    _navItems[i].asset,
               label:    _navItems[i].label,
               isActive: _currentIndex == i,
-              // setState triggers IndexedStack to display the tapped screen.
+              // setState заставляет IndexedStack отобразить выбранный экран.
               onTap: () => setState(() => _currentIndex = i),
             ),
           ),
@@ -155,13 +155,13 @@ class _MainScreenState extends State<MainScreen> {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// NAV ITEM
+// ЭЛЕМЕНТ НАВИГАЦИИ
 // ─────────────────────────────────────────────────────────────────────────────
 
-/// A single bottom-nav tab: totem SVG icon + label.
+/// Одна вкладка нижней навигации: SVG-иконка тотема + подпись.
 ///
-/// Active state: icon scales up slightly (×1.1) and uses [ColorScheme.primary].
-/// Inactive state: icon at normal scale, [ColorScheme.onSurface] at 38% alpha.
+/// Активное состояние: иконка немного увеличивается (×1.1) и использует [ColorScheme.primary].
+/// Неактивное состояние: иконка обычного размера, [ColorScheme.onSurface] с прозрачностью 38%.
 class _NavItem extends StatelessWidget {
   const _NavItem({
     required this.asset,
@@ -170,37 +170,37 @@ class _NavItem extends StatelessWidget {
     required this.onTap,
   });
 
-  /// SVG asset path for the totem icon.
+  /// Путь к SVG-ресурсу для иконки тотема.
   final String asset;
 
-  /// Label text displayed below the icon (rendered in uppercase).
+  /// Текст подписи под иконкой (отрисовывается в верхнем регистре).
   final String label;
 
-  /// Whether this tab is the currently selected one.
+  /// Выбрана ли эта вкладка в данный момент.
   final bool isActive;
 
-  /// Called when the user taps this tab item.
+  /// Вызывается, когда пользователь нажимает на этот элемент вкладки.
   final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
 
-    // Active: primary colour (#7BA5B8 water).
-    // Inactive: onSurface at 38% — M3 unselected-icon opacity token.
+    // Активный: основной цвет (#7BA5B8 water).
+    // Неактивный: onSurface на 38% — стандартный токен прозрачности M3 для невыбранных иконок.
     final color = isActive
         ? cs.primary
         : cs.onSurface.withValues(alpha: 0.38);
 
     return GestureDetector(
       onTap: onTap,
-      // opaque ensures the full column area (including gaps) is tappable,
-      // not just the icon and text pixels.
+      // opaque гарантирует, что вся область колонки (включая промежутки) будет кликабельной,
+      // а не только пиксели иконки и текста.
       behavior: HitTestBehavior.opaque,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          // Subtle scale animation on activation — brand spec: 200 ms.
+          // Легкая анимация масштабирования при активации — спецификация бренда: 200 мс.
           AnimatedScale(
             scale:    isActive ? 1.1 : 1.0,
             duration: const Duration(milliseconds: 200),
@@ -208,18 +208,18 @@ class _NavItem extends StatelessWidget {
               asset,
               width:  24,
               height: 24,
-              // Tint the monochrome SVG with the computed state colour.
+              // Перекрашиваем монохромный SVG в вычисленный цвет состояния.
               colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
             ),
           ),
           const SizedBox(height: 4),
           Text(
-            // Uppercase per brand spec label style.
+            // Верхний регистр согласно стилю подписей бренда.
             label.toUpperCase(),
             style: Theme.of(context).textTheme.labelSmall!.copyWith(
               color:      color,
               fontWeight: isActive ? FontWeight.w700 : FontWeight.w300,
-              // labelSmall already has letterSpacing: 1.2 from the theme.
+              // labelSmall уже имеет letterSpacing: 1.2 из темы.
             ),
           ),
         ],

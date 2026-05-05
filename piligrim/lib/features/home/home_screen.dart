@@ -97,7 +97,7 @@ class HomeScreen extends ConsumerWidget {
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
-//  PRIVATE COMPONENTS
+//  ПРИВАТНЫЕ КОМПОНЕНТЫ
 // ═══════════════════════════════════════════════════════════════════════════
 
 class _SectionLabel extends StatelessWidget {

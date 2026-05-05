@@ -3,18 +3,17 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart'; // Ticker
+import 'package:flutter/scheduler.dart'; // Тикер
 import 'package:flutter_svg/flutter_svg.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
-// SVG ASSET POOL
+// ПУЛ SVG-РЕСУРСОВ
 // ─────────────────────────────────────────────────────────────────────────────
 
-/// 16 totem pictograms from the Piligrim brand set.
-/// Source folder: assets/svg/
-/// Excluded from the pool: piligrim.svg (logo), splash_path.svg, x.svg.
+/// 16 пиктограмм тотемов из фирменного набора Piligrim.
+/// Исходная папка: assets/svg/
+/// Исключены из пула: piligrim.svg (логотип), splash_path.svg, x.svg.
 const List<String> _kAssets = [
-  'assets/svg/assyki.svg',
   'assets/svg/bird_totem.svg',
   'assets/svg/cobyz.svg',
   'assets/svg/luk.svg',
@@ -22,7 +21,6 @@ const List<String> _kAssets = [
   'assets/svg/pegasus.svg',
   'assets/svg/pegasus1.svg',
   'assets/svg/shaman.svg',
-  'assets/svg/sparks.svg',
   'assets/svg/spiral.svg',
   'assets/svg/star_totem.svg',
   'assets/svg/stone.svg',
@@ -33,14 +31,14 @@ const List<String> _kAssets = [
 ];
 
 // ─────────────────────────────────────────────────────────────────────────────
-// PARTICLE MODEL
+// МОДЕЛЬ ЧАСТИЦЫ
 // ─────────────────────────────────────────────────────────────────────────────
 
-/// State of a single floating totem icon.
+/// Состояние одной плавающей иконки тотема.
 ///
-/// All physics quantities use logical pixels (x, y) and seconds (speeds,
-/// frequencies). The coordinate origin is the top-left corner of the screen,
-/// with y increasing downward — so moving upward decreases y.
+/// Все физические величины используют логические пиксели (x, y) и секунды (скорость,
+/// частота). Начало координат находится в левом верхнем углу экрана,
+/// y увеличивается вниз — поэтому движение вверх уменьшает y.
 class TotemParticle {
   TotemParticle({
     required this.svgPath,
@@ -53,180 +51,149 @@ class TotemParticle {
     required this.size,
     required this.steadyOpacity,
     required this.screenH,
-  })  : x = baseX,      // x starts at baseX; sine shifts it each frame
-        id = _nextId++; // unique identifier for Flutter's widget reconciler
+  })  : x = baseX,      // x начинается с baseX; синус смещает его в каждом кадре
+        id = _nextId++; // уникальный идентификатор для сверки виджетов Flutter
 
-  // ── Identity ──────────────────────────────────────────────────────────────
+  // ── Идентификация ──────────────────────────────────────────────────────────
 
-  /// Auto-incrementing id assigned at construction.
-  /// Used as [ValueKey] in the widget tree so Flutter correctly reconciles
-  /// particles when the list grows or shrinks mid-animation.
+  /// Автоматически увеличивающийся id, назначаемый при создании.
+  /// Используется как [ValueKey] в дереве виджетов, чтобы Flutter правильно сопоставлял
+  /// частицы при изменении списка во время анимации.
   static int _nextId = 0;
   final int id;
 
-  // ── Immutable physics constants ───────────────────────────────────────────
+  // ── Неизменяемые физические константы ──────────────────────────────────────
 
-  /// Path to the SVG asset for this particle.
+  /// Путь к SVG-ресурсу для этой частицы.
   final String svgPath;
 
-  /// The x-coordinate around which the particle oscillates horizontally.
-  /// Equals the initial x position; sine drift is applied relative to this.
+  /// Координата x, вокруг которой частица колеблется по горизонтали.
+  /// Равна начальному положению x; дрейф по синусоиде применяется относительно этого значения.
   final double baseX;
 
-  /// Upward speed in logical pixels per second.
-  /// Higher value → shorter time on screen.
+  /// Скорость движения вверх в логических пикселях в секунду.
+  /// Чем выше значение, тем меньше времени частица находится на экране.
   final double speedY;
 
-  /// Amplitude of the horizontal sinusoidal drift, in logical pixels.
-  /// Creates the "ember on a breeze" swaying motion.
+  /// Амплитуда горизонтального синусоидального дрейфа в логических пикселях.
+  /// Создает эффект покачивания «уголька на ветру».
   final double ampX;
 
-  /// Angular frequency of the horizontal oscillation, in radians per second.
-  /// Larger value → faster side-to-side wobble.
+  /// Угловая частота горизонтального колебания в радианах в секунду.
+  /// Большее значение означает более быстрое покачивание из стороны в сторону.
   final double freqX;
 
-  /// Phase offset of the horizontal oscillation (radians).
-  /// Randomised at spawn so each particle sways out of sync with its neighbours.
+  /// Фазовое смещение горизонтального колебания (в радианах).
+  /// Рандомизируется при появлении, чтобы каждая частица качалась несинхронно с соседними.
   final double phaseX;
 
-  /// Icon render size in logical pixels. Randomised in the range 20–45 px.
+  /// Размер иконки в логических пикселях. Рандомизируется в диапазоне 20–45 пикселей.
   final double size;
 
-  /// The opacity value used while the particle is in its "steady" flight zone
-  /// (neither fading in nor fading out). Range: 0.10–0.15 per brand spec.
+  /// Значение прозрачности, используемое в «стабильной» зоне полета
+  /// (без затухания или появления). Диапазон: 0.10–0.15 согласно спецификации бренда.
   final double steadyOpacity;
 
-  /// Cached screen height used to compute the opacity envelope.
-  /// Re-used every frame; avoids passing screenH into [update].
+  /// Кэшированная высота экрана, используемая для расчета огибающей прозрачности.
+  /// Переиспользуется в каждом кадре.
   final double screenH;
 
-  // ── Mutable state (updated every tick) ───────────────────────────────────
+  // ── Изменяемое состояние (обновляется в каждом тике) ────────────────────────
 
-  /// Current left edge of the icon, in logical pixels.
+  /// Текущий левый край иконки в логических пикселях.
   double x;
 
-  /// Current top edge of the icon, in logical pixels.
+  /// Текущий верхний край иконки в логических пикселях.
   double y;
 
-  // ── Derived properties ────────────────────────────────────────────────────
+  // ── Вычисляемые свойства ──────────────────────────────────────────────────
 
-  /// True when the icon has fully risen above the top of the screen.
-  /// The particle is then recycled and a new one is spawned from below.
+  /// True, если иконка полностью поднялась выше верхней границы экрана.
+  /// После этого частица утилизируется, и снизу появляется новая.
   bool get isDead => y + size < 0;
 
-  /// Current opacity, driven by the particle's vertical position.
+  /// Текущая прозрачность, зависящая от вертикального положения частицы.
   ///
-  /// Opacity envelope (based on normalised y ∈ [0, 1]):
-  ///   • [0.88 … 1.0] — fade-in zone (particle enters from below)
-  ///   • [0.28 … 0.88] — steady zone (brand-spec opacity: 0.10–0.15)
-  ///   • [0.00 … 0.28] — fade-out zone (particle disappears near the top)
+  /// Огибающая прозрачности (на основе нормализованного y ∈ [0, 1]):
+  ///   • [0.88 … 1.0] — зона появления (частица входит снизу)
+  ///   • [0.28 … 0.88] — стабильная зона (прозрачность по бренду: 0.10–0.15)
+  ///   • [0.00 … 0.28] — зона затухания (частица исчезает у верхней границы)
   double get opacity {
-    // norm = 1.0 when the particle is at the bottom, 0.0 at the top.
+    // norm = 1.0, когда частица внизу, 0.0 — вверху.
     final norm = (y / screenH).clamp(0.0, 1.0);
 
     if (norm > 0.88) {
-      // Fade in: 0 → steadyOpacity as the particle enters from below.
+      // Появление: от 0 до steadyOpacity при входе частицы снизу.
       return ((1.0 - norm) / 0.12) * steadyOpacity;
     }
     if (norm < 0.28) {
-      // Fade out: steadyOpacity → 0 as the particle approaches the top third.
+      // Затухание: от steadyOpacity до 0 при приближении к верхней трети.
       return (norm / 0.28) * steadyOpacity;
     }
 
-    // Steady flight.
+    // Стабильный полет.
     return steadyOpacity;
   }
 
-  // ── Physics update ────────────────────────────────────────────────────────
+  // ── Обновление физики ─────────────────────────────────────────────────────
 
-  /// Advance the particle by [dt] seconds.
+  /// Продвижение частицы на [dt] секунд.
   ///
-  /// [totalSec] is the accumulated physics time (clamped, not wall-clock time)
-  /// used to compute the horizontal sine position.
+  /// [totalSec] — накопленное физическое время (ограниченное, не реальное время),
+  /// используемое для расчета горизонтального положения по синусоиде.
   void update(double dt, double totalSec) {
-    // Move upward.
+    // Движение вверх.
     y -= speedY * dt;
 
-    // Sinusoidal horizontal drift: mimics an ember drifting on a light breeze.
+    // Синусоидальный горизонтальный дрейф: имитирует уголек, плывущий на легком ветру.
     x = baseX + ampX * sin(freqX * totalSec + phaseX);
   }
 
-  // ── Factories ─────────────────────────────────────────────────────────────
+  // ── Фабрики ───────────────────────────────────────────────────────────────
 
-  /// Creates a particle that enters the screen from below.
+  /// Создает частицу, которая входит на экран снизу.
   ///
-  /// Used for ongoing particle respawning after an old particle leaves the top.
+  /// Используется для постоянного восполнения частиц после того, как старая частица покинула экран сверху.
   factory TotemParticle.spawn(double screenW, double screenH, Random rng) {
-    final size = 20.0 + rng.nextDouble() * 25.0; // 20–45 px
+    final size = 20.0 + rng.nextDouble() * 25.0; // 20–45 пикселей
 
     return TotemParticle(
       svgPath:       _kAssets[rng.nextInt(_kAssets.length)],
-      // Keep the oscillation zone within [0, screenW] by clamping baseX.
+      // Ограничиваем зону колебаний в пределах [0, screenW] с помощью baseX.
       baseX:         size + rng.nextDouble() * (screenW - size * 2).clamp(0, screenW),
-      // Spawn just below the visible area with a small random extra offset
-      // to stagger the entry timing naturally.
-      y:             screenH + rng.nextDouble() * screenH * 0.25,
-      speedY:        16.0 + rng.nextDouble() * 16.0, // 16–32 px/s → ~10–20 s on screen
-      ampX:          8.0  + rng.nextDouble() * 18.0, // 8–26 px lateral swing
-      freqX:         0.18 + rng.nextDouble() * 0.32, // 0.18–0.50 rad/s
-      phaseX:        rng.nextDouble() * 2 * pi,       // random start phase
+      // Появление чуть ниже видимой области с небольшим случайным смещением
+      // для естественного чередования появления.
+      y:             screenH + rng.nextDouble() * 20.0,
+      speedY:        16.0 + rng.nextDouble() * 16.0, // 16–32 пикс/с → ~10–20 с на экране
+      ampX:          8.0  + rng.nextDouble() * 18.0, // амплитуда колебания 8–26 пикс
+      freqX:         0.18 + rng.nextDouble() * 0.32, // частота 0.18–0.50 рад/с
+      phaseX:        rng.nextDouble() * 2 * pi,       // случайная начальная фаза
       size:          size,
-      steadyOpacity: 0.10 + rng.nextDouble() * 0.05, // 0.10–0.15 (brand spec)
+      steadyOpacity: 0.10 + rng.nextDouble() * 0.05, // 0.10–0.15 (по бренду)
       screenH:       screenH,
     );
   }
 
-  /// Creates a particle at a random y position anywhere on screen.
+  /// Создает частицу в случайной позиции y в любом месте экрана.
   ///
-  /// Used for the **initial seed** so the animation looks already in progress
-  /// on first render, instead of being empty for several seconds while
-  /// particles drift up from below.
+  /// Используется для **начального заполнения**, чтобы анимация выглядела уже запущенной
+  /// при первом рендере, а не пустой в течение нескольких секунд.
   factory TotemParticle.seeded(double screenW, double screenH, Random rng) {
     final p = TotemParticle.spawn(screenW, screenH, rng);
-    // Randomise y within the visible area.
+    // Рандомизируем y внутри видимой области.
     p.y = rng.nextDouble() * screenH;
     return p;
   }
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// WIDGET
+// ВИДЖЕТ
 // ─────────────────────────────────────────────────────────────────────────────
 
-/// Full-screen animated background layer of slowly rising, gently drifting
-/// Piligrim totem icons.
+/// Полноэкранный анимированный фоновый слой с медленно поднимающимися и плавно дрейфующими
+/// иконками тотемов Piligrim.
 ///
-/// Visual behaviour (Piligrim brand spec):
-///   • Icons drift upward at 16–32 px/s with a sinusoidal lateral sway.
-///   • Opacity: 0.10–0.15 (brand colour #F2EDE4); fade-in at the bottom,
-///     fade-out before the top third of the screen.
-///   • Icon sizes vary per-particle: 20–45 logical pixels.
-///   • Up to [particleCount] icons are alive simultaneously (default: 20).
-///
-/// Performance design:
-///   • A **single [Ticker]** drives all particles — one vsync callback per
-///     frame regardless of particle count.
-///   • Opacity is encoded directly into [ColorFilter.mode] (baked colour alpha)
-///     to avoid the compositing-layer overhead of the [Opacity] widget.
-///   • [SvgPicture.asset] caches the parsed SVG [Picture] per asset path;
-///     changing `colorFilter` each frame only triggers a cheap repaint,
-///     never a re-parse.
-///   • [ValueKey] on each [Positioned] lets Flutter reconcile the particle
-///     list in O(n) even when particles are removed mid-list.
-///
-/// Bug fix — "totems disappear after SplashScreen":
-///   When an opaque route (e.g. SplashScreen) sits on top of this widget,
-///   Flutter's [TickerMode] suppresses vsync callbacks while the [Ticker]'s
-///   internal clock continues.  On route pop, the first resumed tick delivers
-///   `elapsed − _lastElapsed` ≈ the entire splash duration (often 2–3 s).
-///   Without mitigation, every particle moves `dt × speedY ≈ 3 × 32 = 96 px`
-///   upward in one frame, all become `isDead`, and the screen goes blank.
-///
-///   **Fix:** `dt` is clamped to a maximum of two 30-fps frames (~66 ms),
-///   and `_totalSec` is accumulated from the clamped dt (not raw elapsed),
-///   so neither vertical nor horizontal position can jump on resume.
-///
-/// Usage:
+/// Использование:
 /// ```dart
 /// body: Stack(
 ///   children: [
@@ -241,8 +208,8 @@ class FloatingTotemsBackground extends StatefulWidget {
     this.particleCount = 20,
   });
 
-  /// Number of totem particles kept alive simultaneously.
-  /// 15–25 is the recommended range for a balanced density vs. performance.
+  /// Количество частиц тотемов, поддерживаемых одновременно.
+  /// Рекомендуемый диапазон 15–25 для баланса плотности и производительности.
   final int particleCount;
 
   @override
@@ -253,122 +220,87 @@ class FloatingTotemsBackground extends StatefulWidget {
 class _FloatingTotemsBackgroundState extends State<FloatingTotemsBackground>
     with SingleTickerProviderStateMixin {
 
-  // ── Animation driver ──────────────────────────────────────────────────────
+  // ── Управление анимацией ──────────────────────────────────────────────────
 
-  /// The vsync-aligned ticker that drives the particle simulation.
-  /// Automatically paused by [TickerMode] when the widget is off-screen
-  /// (e.g. hidden behind another route in the Navigator stack).
+  /// Тикер, синхронизированный с vsync, который управляет симуляцией частиц.
+  /// Автоматически приостанавливается [TickerMode], когда виджет не на экране
+  /// (например, скрыт за другим роутом в стеке Navigator).
   late final Ticker _ticker;
 
-  // ── Timing ────────────────────────────────────────────────────────────────
+  // ── Тайминг ───────────────────────────────────────────────────────────────
 
-  /// The elapsed duration from the last [_onTick] call.
-  /// Used to compute the raw inter-frame delta time.
+  /// Время, прошедшее с момента последнего вызова [_onTick].
+  /// Используется для расчета необработанной разницы времени между кадрами.
   Duration _lastElapsed = Duration.zero;
 
-  /// Accumulated physics time in seconds, advanced by the **clamped** dt.
+  /// Накопленное физическое время в секундах, увеличивающееся на **ограниченное** dt.
   ///
-  /// Deliberately decoupled from wall-clock time so that a large gap in
-  /// vsync callbacks (ticker paused during navigation) does not cause the
-  /// horizontal sine oscillation to jump position on resume.
+  /// Намеренно отделено от реального времени, чтобы большой разрыв в
+  /// вызовах vsync (пауза тикера при навигации) не приводил к резкому
+  /// прыжку горизонтального положения синусоиды при возобновлении.
   double _totalSec = 0.0;
 
-  // ── Particles ─────────────────────────────────────────────────────────────
+  // ── Частицы ───────────────────────────────────────────────────────────────
 
   final List<TotemParticle> _particles = [];
   final _rng = Random();
 
-  // ── Layout ────────────────────────────────────────────────────────────────
+  // ── Слой (Layout) ──────────────────────────────────────────────────────────
 
-  /// Cached widget size captured from [LayoutBuilder] during [build].
-  /// The ticker reads this on the next vsync — safe because the field is
-  /// always written before the ticker callback fires on the following frame.
+  /// Кэшированный размер виджета, полученный из [LayoutBuilder] во время [build].
+  /// Тикер считывает его на следующем vsync.
   Size _size = Size.zero;
 
-  /// True once the initial seed has been performed.
-  /// The seed distributes particles randomly across the visible area so the
-  /// animation appears in-progress from the very first frame.
-  bool _seeded = false;
-
-  // ── Lifecycle ─────────────────────────────────────────────────────────────
+  // ── Жизненный цикл ─────────────────────────────────────────────────────────
 
   @override
   void initState() {
     super.initState();
-    // Start the ticker immediately; it will do nothing until _size is known.
+    // Запускаем тикер немедленно; он ничего не будет делать, пока _size не станет известен.
     _ticker = createTicker(_onTick)..start();
   }
 
   @override
   void dispose() {
-    // Disposing the ticker cancels the vsync registration and stops callbacks.
+    // Удаление тикера отменяет регистрацию vsync и останавливает обратные вызовы.
     _ticker.dispose();
     super.dispose();
   }
 
-  // ── Tick handler ──────────────────────────────────────────────────────────
+  // ── Обработчик тиков ──────────────────────────────────────────────────────
 
   void _onTick(Duration elapsed) {
-    // ── Delta-time calculation ───────────────────────────────────────────
+    // ── Расчет дельты времени (dt) ───────────────────────────────────────
     final rawDt = (elapsed - _lastElapsed).inMicroseconds / 1e6;
 
-    // Always update _lastElapsed with the true elapsed value so the *next*
-    // frame's rawDt is relative to the correct baseline, even if we clamp.
+    // Всегда обновляем _lastElapsed истинным значением, чтобы rawDt следующего
+    // кадра был относительно правильной базы, даже если мы ограничиваем текущий.
     _lastElapsed = elapsed;
 
-    // ── BUG FIX: clamp dt ────────────────────────────────────────────────
-    // Cap dt to ≤ 66 ms (two 30-fps frames).
-    //
-    // Why this is needed:
-    //   [SingleTickerProviderStateMixin] respects [TickerMode]. When an
-    //   opaque route (SplashScreen) is pushed on top, TickerMode is
-    //   disabled → the ticker stops firing, but its internal clock keeps
-    //   running.  When the route is popped, TickerMode is re-enabled and
-    //   the ticker resumes.  The first resumed callback has
-    //     elapsed − _lastElapsed ≈ duration of the entire pause.
-    //   Without this clamp, all particles jump several screen-heights in
-    //   one frame, all become isDead simultaneously, and the screen goes
-    //   completely blank — which is the reported bug.
-    //
-    // Effect:
-    //   At 32 px/s × 0.066 s ≈ 2 px max jump per frame, so the animation
-    //   seamlessly continues from where it paused.
-    final dt = rawDt.clamp(0.0, 0.066);
+    // ── ИСПРАВЛЕНИЕ: ограничение dt ──────────────────────────────────────
+    double dt = rawDt;
+    if (dt <= 0.0 || dt > 0.05) {
+      dt = 0.016; // Запасной вариант для 60 FPS
+    }
 
-    // Advance physics time using the **clamped** dt, not raw elapsed.
-    // This keeps the horizontal sine position stable across pauses.
+    // Увеличиваем физическое время на **ограниченное** dt, а не на реальное время.
+    // Это сохраняет стабильность горизонтального положения синусоиды после пауз.
     _totalSec += dt;
 
-    // ── Guard: skip physics until layout is known ────────────────────────
+    // ── Проверка: пропускаем физику, пока размер неизвестен ──────────────
     if (_size == Size.zero) return;
 
     setState(() {
-      // ── Initial seed (runs exactly once) ──────────────────────────────
-      // Distribute particles across the whole visible area so the screen
-      // looks populated immediately, rather than waiting 10–20 s while the
-      // first wave drifts up from below.
-      if (!_seeded) {
-        _seeded = true;
-        for (int i = 0; i < widget.particleCount; i++) {
-          _particles.add(
-            TotemParticle.seeded(_size.width, _size.height, _rng),
-          );
-        }
-        // Skip the physics update on the seeding frame — particles are
-        // placed at correct positions already.
-        return;
-      }
-
-      // ── Physics update ────────────────────────────────────────────────
+      // ── Обновление физики ─────────────────────────────────────────────
       for (final p in _particles) {
         p.update(dt, _totalSec);
       }
 
-      // ── Recycle dead particles ────────────────────────────────────────
-      // Remove particles that have fully exited the top of the screen.
+      // ── Утилизация «мертвых» частиц ────────────────────────────────────
+      // Удаляем частицы, которые полностью покинули экран сверху.
       _particles.removeWhere((p) => p.isDead);
 
-      // Spawn replacements from below to maintain the target density.
+      // Добавляем новые частицы снизу для поддержания целевой плотности.
       while (_particles.length < widget.particleCount) {
         _particles.add(
           TotemParticle.spawn(_size.width, _size.height, _rng),
@@ -377,24 +309,37 @@ class _FloatingTotemsBackgroundState extends State<FloatingTotemsBackground>
     });
   }
 
-  // ── Build ─────────────────────────────────────────────────────────────────
+  // ── Рендеринг ─────────────────────────────────────────────────────────────
 
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
-        // Capture the current widget size so the ticker can use it.
-        // This is a plain field assignment (not setState), which is safe
-        // in build — it has no effect on the current frame's layout.
+        if (constraints.maxHeight == 0) {
+          return const SizedBox.shrink();
+        }
+
+        // Сохраняем текущий размер виджета для использования тикером.
+        // Это простое присваивание поля (не setState), что безопасно в build.
         _size = constraints.biggest;
 
+        if (_particles.isEmpty) {
+          for (int i = 0; i < widget.particleCount; i++) {
+            _particles.add(
+              TotemParticle.seeded(constraints.maxWidth, constraints.maxHeight, _rng),
+            );
+          }
+        }
+
         return Stack(
-          // Clip particles that drift outside the widget bounds (e.g. after
-          // horizontal sine swing near the edges).
+          // Обрезаем частицы, которые выходят за границы виджета (например, при колебаниях).
           clipBehavior: Clip.hardEdge,
           children: [
             for (final p in _particles)
-              _ParticleWidget(particle: p),
+              _ParticleWidget(
+                key: ValueKey(p.id),
+                particle: p,
+              ),
           ],
         );
       },
@@ -403,47 +348,35 @@ class _FloatingTotemsBackgroundState extends State<FloatingTotemsBackground>
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// PARTICLE WIDGET
+// ВИДЖЕТ ЧАСТИЦЫ
 // ─────────────────────────────────────────────────────────────────────────────
 
-/// Renders a single [TotemParticle] as a positioned, tinted SVG icon.
+/// Отрисовывает одну [TotemParticle] как позиционированную SVG-иконку с оттенком.
 ///
-/// A dedicated widget class (rather than an inline builder) makes the Stack
-/// children list easier to read and lets Flutter's reconciler use [ValueKey]
-/// to match old and new elements efficiently.
+/// Использование отдельного класса виджета (вместо инлайнового билдера) делает список
+/// детей Stack более читаемым и позволяет Flutter использовать [ValueKey] для эффективной сверки.
 class _ParticleWidget extends StatelessWidget {
-  const _ParticleWidget({required this.particle});
+  const _ParticleWidget({super.key, required this.particle});
 
   final TotemParticle particle;
 
   @override
   Widget build(BuildContext context) {
-    // Convert 0.0–1.0 opacity to an 8-bit alpha value.
-    final alpha = (particle.opacity * 255).round().clamp(0, 255);
-
-    // Skip fully transparent particles to avoid unnecessary paint calls.
-    if (alpha == 0) return const SizedBox.shrink();
-
     return Positioned(
-      // ValueKey enables O(1) reconciliation when a particle is removed from
-      // the middle of the list (which would otherwise misidentify survivors).
-      key: ValueKey(particle.id),
-      // particle.x is the icon's horizontal centre; offset by half-size to
-      // convert to Positioned's left-edge coordinate.
+      // particle.x — это горизонтальный центр иконки; смещаем на половину размера,
+      // чтобы преобразовать в координату левого края Positioned.
       left: particle.x - particle.size / 2,
       top:  particle.y,
       child: SvgPicture.asset(
         particle.svgPath,
         width:  particle.size,
         height: particle.size,
-        // Encode opacity directly into the ColorFilter instead of wrapping
-        // in an Opacity widget.  Opacity creates a compositing layer
-        // (saveLayer), adding GPU overhead for every particle every frame.
-        // ColorFilter.mode is applied in the existing SVG paint pass with
-        // zero additional layer cost.
+        // Кодируем прозрачность напрямую в ColorFilter вместо использования виджета Opacity.
+        // Opacity создает слой композиции (saveLayer), что дает нагрузку на GPU.
+        // ColorFilter.mode применяется при отрисовке SVG без дополнительных затрат.
         colorFilter: ColorFilter.mode(
-          // Brand sky colour #F2EDE4 at the computed alpha.
-          Color.fromARGB(alpha, 0xF2, 0xED, 0xE4),
+          // Фирменный цвет неба #F2EDE4 с вычисленной прозрачностью.
+          Color(0xFFF2EDE4).withOpacity(particle.opacity.clamp(0.0, 1.0)),
           BlendMode.srcIn,
         ),
       ),
