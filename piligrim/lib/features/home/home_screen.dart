@@ -57,12 +57,24 @@ class _StatusAndConceptWidget extends StatelessWidget {
       children: [
         // Логотип ресторана
         SvgPicture.asset(
-          'assets/svg/piligrim.svg', // Исправлено имя файла (убрана 's')
+          'assets/svg/piligrim.svg',
           height: 40,
           colorFilter: const ColorFilter.mode(primaryColor, BlendMode.srcIn),
         ),
 
-        const SizedBox(height: 12),
+        const SizedBox(height: 24),
+
+        // Главное изображение
+        ClipRRect(
+          borderRadius: BorderRadius.circular(16),
+          child: Image.asset(
+            'assets/images/main.png',
+            height: 330, // Увеличено в 1.5 раза (320 * 1.5)
+            fit: BoxFit.cover,
+          ),
+        ),
+
+        const SizedBox(height: 48),
 
         // Текст концепции
         Padding(
@@ -77,45 +89,6 @@ class _StatusAndConceptWidget extends StatelessWidget {
               fontFamily: 'Museo Sans',
               height: 1.5,
             ),
-          ),
-        ),
-
-        const SizedBox(height: 24),
-
-        // Бейдж статуса
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-          decoration: BoxDecoration(
-            color: primaryColor.withValues(alpha: 0.1),
-            borderRadius: BorderRadius.circular(
-              8,
-            ), // Изменено с 20 на 8 согласно брендбуку
-          ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              // Индикатор "Открыто"
-              Container(
-                width: 8,
-                height: 8,
-                decoration: const BoxDecoration(
-                  color: Color(
-                    0xFF7BA5B8,
-                  ), // Использован акцентный цвет Мөлдір су, так как зеленый вне палитры
-                  shape: BoxShape.circle,
-                ),
-              ),
-              const SizedBox(width: 8),
-              const Text(
-                'Открыто сейчас • до 00:00',
-                style: TextStyle(
-                  color: primaryColor,
-                  fontSize: 14,
-                  fontWeight: FontWeight.w300,
-                  fontFamily: 'Museo Sans',
-                ),
-              ),
-            ],
           ),
         ),
       ],
@@ -133,7 +106,7 @@ class _ActionButtons extends ConsumerWidget {
     const primaryColor = Color(0xFFFFFFFF);
 
     return SizedBox(
-      width: 300,
+      width: 250,
       child: Column(
         children: [
           // Кнопка 1: Забронировать стол (CTA)

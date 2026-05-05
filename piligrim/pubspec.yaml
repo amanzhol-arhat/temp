@@ -38,3 +38,4 @@ flutter:
   # Регистрация SVG и других ассетов
   assets:
     - assets/svg/
+    - assets/images/
