@@ -62,23 +62,6 @@ class _StatusAndConceptWidget extends StatelessWidget {
 
         const SizedBox(height: 12),
 
-        // Приветствие
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24),
-          child: Text(
-            'Дорогие герои, добро пожаловать в PILIGRIM!',
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              color: const Color(0xFFC4956A),
-              fontSize: 16,
-              fontWeight: FontWeight.w700,
-              fontFamily: 'Museo Sans',
-            ),
-          ),
-        ),
-
-        const SizedBox(height: 12),
-
         // Текст концепции
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 40),
@@ -86,9 +69,9 @@ class _StatusAndConceptWidget extends StatelessWidget {
             'Духовно-гастрономическое путешествие.\nВкус жизни. Путь героя.',
             textAlign: TextAlign.center,
             style: TextStyle(
-              color: primaryColor.withValues(alpha: 0.8),
+              color: const Color(0xFFC4956A),
               fontSize: 16,
-              fontWeight: FontWeight.w300,
+              fontWeight: FontWeight.w700,
               fontFamily: 'Museo Sans',
               height: 1.5, // Изменено с 1.4 на 1.5 согласно брендбуку
             ),
