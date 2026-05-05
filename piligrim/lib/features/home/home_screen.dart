@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import '../../core/widgets/floating_totems_background.dart';
+import '../navigation/navigation_provider.dart';
 
 /// Главный экран приложения Piligrim.
 ///
@@ -57,6 +58,23 @@ class _StatusAndConceptWidget extends StatelessWidget {
           'assets/svg/piligrim.svg', // Исправлено имя файла (убрана 's')
           height: 40,
           colorFilter: const ColorFilter.mode(primaryColor, BlendMode.srcIn),
+        ),
+
+        const SizedBox(height: 12),
+
+        // Приветствие
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 24),
+          child: Text(
+            'Дорогие герои, добро пожаловать в PILIGRIM!',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              color: const Color(0xFFC4956A),
+              fontSize: 16,
+              fontWeight: FontWeight.w700,
+              fontFamily: 'Museo Sans',
+            ),
+          ),
         ),
 
         const SizedBox(height: 12),
@@ -117,11 +135,11 @@ class _StatusAndConceptWidget extends StatelessWidget {
 }
 
 /// Виджет с кнопками действий.
-class _ActionButtons extends StatelessWidget {
+class _ActionButtons extends ConsumerWidget {
   const _ActionButtons();
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     const accentColor = Color(0xFF7BA5B8);
     const primaryColor = Color(0xFFF2EDE4);
 
@@ -161,7 +179,10 @@ class _ActionButtons extends StatelessWidget {
             width: double.infinity,
             height: 52,
             child: OutlinedButton(
-              onPressed: () {},
+              onPressed: () {
+                // Переключаем на вкладку "Меню" (индекс 1)
+                ref.read(navigationIndexProvider.notifier).state = 1;
+              },
               style: OutlinedButton.styleFrom(
                 foregroundColor: accentColor,
                 side: const BorderSide(color: accentColor, width: 1.5),
