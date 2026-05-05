@@ -3,53 +3,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import '../../core/theme.dart';
 import '../../core/constants.dart';
+import '../../core/widgets/floating_totems_background.dart';
 import '../../data/repositories/providers.dart';
 
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
-
-  // ─── Бизнес-логика (не трогаем) ──────────────────────────────────────────
-
-  void _callWaiter(BuildContext context, String action) {
-    ScaffoldMessenger.of(context).hideCurrentSnackBar();
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(
-          '$action — запрос отправлен',
-          style: const TextStyle(
-            color: AppColors.steppe,
-            fontFamily: 'Museo Sans',
-          ),
-        ),
-        backgroundColor: AppColors.earthDeep,
-        behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-        duration: const Duration(seconds: 2),
-      ),
-    );
-
-    Future.delayed(const Duration(milliseconds: 2500), () {
-      if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: const Text(
-              'Официант уже в пути',
-              style: TextStyle(color: AppColors.sky, fontFamily: 'Museo Sans'),
-            ),
-            backgroundColor: AppColors.earthDeep,
-            behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(8),
-            ),
-            duration: const Duration(seconds: 2),
-          ),
-        );
-      }
-    });
-  }
-
-  // ─── Build ────────────────────────────────────────────────────────────────
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -57,12 +15,15 @@ class HomeScreen extends ConsumerWidget {
     final todayEventsAsync = ref.watch(todayEventsProvider);
 
     return Scaffold(
-      backgroundColor: AppColors.earth,
-      body: SafeArea(
-        child: CustomScrollView(
+      backgroundColor: Theme.of(context).colorScheme.surface,
+      body: Stack(
+        children: [
+          const IgnorePointer(child: FloatingTotemsBackground()),
+          SafeArea(
+            child: CustomScrollView(
           physics: const BouncingScrollPhysics(),
           slivers: [
-            // ── Логотип ────────────────────────────────────────────────────
+            // ── Логотип ──────────────────────────────────────────────────────
             SliverToBoxAdapter(
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(24, 28, 24, 32),
@@ -77,7 +38,7 @@ class HomeScreen extends ConsumerWidget {
               ),
             ),
 
-            // ── Сезонное ───────────────────────────────────────────────────
+            // ── Сезонное ─────────────────────────────────────────────────────
             SliverToBoxAdapter(
               child: _SectionLabel(label: '✦ СЕЗОННОЕ'),
             ),
@@ -102,7 +63,7 @@ class HomeScreen extends ConsumerWidget {
 
             const SliverToBoxAdapter(child: SizedBox(height: 32)),
 
-            // ── Сегодня в Piligrim ──────────────────────────────────────────
+            // ── Сегодня в Piligrim ────────────────────────────────────────────
             SliverToBoxAdapter(
               child: _SectionLabel(label: '✦ СЕГОДНЯ В PILIGRIM'),
             ),
@@ -125,56 +86,11 @@ class HomeScreen extends ConsumerWidget {
               ),
             ),
 
-            const SliverToBoxAdapter(child: SizedBox(height: 32)),
-
-            // ── Управление ─────────────────────────────────────────────────
-            SliverToBoxAdapter(
-              child: _SectionLabel(label: '✦ УПРАВЛЕНИЕ'),
-            ),
-            SliverPadding(
-              padding: const EdgeInsets.symmetric(horizontal: 24),
-              sliver: SliverGrid.count(
-                crossAxisCount: 2,
-                mainAxisSpacing: 10,
-                crossAxisSpacing: 10,
-                childAspectRatio: 2.4,
-                children: [
-                  _WaiterButton(
-                    context: context,
-                    onTap: _callWaiter,
-                    icon: '✦',
-                    label: 'Позвать',
-                    action: 'Подойти к столу',
-                  ),
-                  _WaiterButton(
-                    context: context,
-                    onTap: _callWaiter,
-                    icon: '⬡',
-                    label: 'Счёт',
-                    action: 'Принести счёт',
-                  ),
-                  _WaiterButton(
-                    context: context,
-                    onTap: _callWaiter,
-                    icon: '◆',
-                    label: 'Вода',
-                    action: 'Принести воду',
-                  ),
-                  _WaiterButton(
-                    context: context,
-                    onTap: _callWaiter,
-                    icon: '✧',
-                    label: 'Помощь',
-                    action: 'Нужна помощь',
-                  ),
-                ],
-              ),
-            ),
-
-            // ── Нижний отступ для TabBar ────────────────────────────────────
             const SliverToBoxAdapter(child: SizedBox(height: 48)),
           ],
         ),
+      ),
+        ],
       ),
     );
   }
@@ -184,7 +100,6 @@ class HomeScreen extends ConsumerWidget {
 //  PRIVATE COMPONENTS
 // ═══════════════════════════════════════════════════════════════════════════
 
-/// Заголовок секции — лёгкий, трекинговый, золотистый.
 class _SectionLabel extends StatelessWidget {
   const _SectionLabel({required this.label});
   final String label;
@@ -197,7 +112,7 @@ class _SectionLabel extends StatelessWidget {
         label,
         style: TextStyle(
           fontSize: 11,
-          color: AppColors.steppe.withOpacity(0.85),
+          color: AppColors.steppe.withValues(alpha: 0.85),
           letterSpacing: 2.4,
           fontWeight: FontWeight.w400,
           fontFamily: 'Museo Sans',
@@ -221,12 +136,12 @@ class _SeasonalCard extends StatelessWidget {
         color: AppColors.earthDeep,
         borderRadius: BorderRadius.circular(14),
         border: Border.all(
-          color: AppColors.sky.withOpacity(0.06),
+          color: AppColors.sky.withValues(alpha: 0.06),
           width: 1,
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.18),
+            color: Colors.black.withValues(alpha: 0.18),
             blurRadius: 12,
             offset: const Offset(0, 4),
           ),
@@ -235,22 +150,20 @@ class _SeasonalCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Изображение — 56 % высоты карточки (≈ 117 px из 210)
           ClipRRect(
             borderRadius: const BorderRadius.vertical(top: Radius.circular(14)),
             child: Container(
               height: 118,
-              color: AppColors.water.withOpacity(0.35),
+              color: AppColors.water.withValues(alpha: 0.35),
               child: Center(
                 child: Icon(
                   Icons.restaurant,
-                  color: AppColors.water.withOpacity(0.5),
+                  color: AppColors.water.withValues(alpha: 0.5),
                   size: 32,
                 ),
               ),
             ),
           ),
-          // Текстовый блок — фиксированные внутренние отступы
           Expanded(
             child: Padding(
               padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
@@ -302,12 +215,12 @@ class _EventCard extends StatelessWidget {
         color: AppColors.earthDeep,
         borderRadius: BorderRadius.circular(14),
         border: Border.all(
-          color: AppColors.steppe.withOpacity(0.18),
+          color: AppColors.steppe.withValues(alpha: 0.18),
           width: 1,
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.14),
+            color: Colors.black.withValues(alpha: 0.14),
             blurRadius: 10,
             offset: const Offset(0, 3),
           ),
@@ -315,7 +228,6 @@ class _EventCard extends StatelessWidget {
       ),
       child: Row(
         children: [
-          // Левый акцент-бордер
           Container(
             width: 3,
             decoration: const BoxDecoration(
@@ -326,7 +238,6 @@ class _EventCard extends StatelessWidget {
               ),
             ),
           ),
-          // Контент
           Expanded(
             child: Padding(
               padding: const EdgeInsets.fromLTRB(14, 14, 14, 14),
@@ -358,7 +269,7 @@ class _EventCard extends StatelessWidget {
                     event.description,
                     style: TextStyle(
                       fontSize: 11,
-                      color: AppColors.sky.withOpacity(0.55),
+                      color: AppColors.sky.withValues(alpha: 0.55),
                       height: 1.4,
                     ),
                     maxLines: 2,
@@ -374,81 +285,7 @@ class _EventCard extends StatelessWidget {
   }
 }
 
-/// Кнопка вызова официанта — иконка + надпись строго по центру.
-class _WaiterButton extends StatelessWidget {
-  const _WaiterButton({
-    required this.context,
-    required this.onTap,
-    required this.icon,
-    required this.label,
-    required this.action,
-  });
-
-  final BuildContext context;
-  final void Function(BuildContext, String) onTap;
-  final String icon;
-  final String label;
-  final String action;
-
-  @override
-  Widget build(BuildContext _) {
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: () => onTap(context, action),
-        borderRadius: BorderRadius.circular(12),
-        splashColor: AppColors.steppe.withOpacity(0.12),
-        highlightColor: AppColors.steppe.withOpacity(0.06),
-        child: Ink(
-          decoration: BoxDecoration(
-            color: AppColors.earthDeep,
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(
-              color: AppColors.sky.withOpacity(0.07),
-              width: 1,
-            ),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.16),
-                blurRadius: 8,
-                offset: const Offset(0, 2),
-              ),
-            ],
-          ),
-          child: Center(
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Text(
-                  icon,
-                  style: const TextStyle(
-                    color: AppColors.steppe,
-                    fontSize: 14,
-                    height: 1.0,
-                  ),
-                ),
-                const SizedBox(width: 10),
-                Text(
-                  label,
-                  style: const TextStyle(
-                    fontSize: 13,
-                    fontWeight: FontWeight.w400,
-                    color: AppColors.sky,
-                    letterSpacing: 0.4,
-                    height: 1.0,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-// ── Вспомогательные состояния ─────────────────────────────────────────────
+// ── Вспомогательные состояния ──────────────────────────────────────────────
 
 class _LoadingIndicator extends StatelessWidget {
   const _LoadingIndicator();
@@ -474,7 +311,7 @@ class _ErrorLabel extends StatelessWidget {
       child: Text(
         'Ошибка: $message',
         style: TextStyle(
-          color: AppColors.sky.withOpacity(0.4),
+          color: AppColors.sky.withValues(alpha: 0.4),
           fontSize: 12,
         ),
       ),

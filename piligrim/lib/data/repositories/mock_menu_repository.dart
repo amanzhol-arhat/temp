@@ -1,10 +1,9 @@
 import '../models/dish.dart';
 
 class MockMenuRepository {
-  // Имитация сетевой задержки (High Agency: готовимся к реальному API)
   Future<List<Dish>> getDishes() async {
     await Future.delayed(const Duration(milliseconds: 800));
-    
+
     return [
       Dish(
         id: 1,
@@ -18,12 +17,8 @@ class MockMenuRepository {
         protein: 4,
         fat: 9,
         carbs: 22,
-        imageUrl: 'assets/images/pumpkin_soup.png', // Заглушка пути
+        imageUrl: 'assets/images/pumpkin_soup.png',
         videoUrl: 'assets/videos/2026-02-12 16.39.35.mp4',
-        comments: [
-          DishComment(author: 'Мария', rating: 5, text: 'Потрясающий вкус, нежная текстура!'),
-          DishComment(author: 'Алексей', rating: 4, text: 'Ароматный и согревающий'),
-        ],
       ),
       Dish(
         id: 3,
@@ -38,9 +33,6 @@ class MockMenuRepository {
         fat: 22,
         carbs: 16,
         videoUrl: 'assets/videos/IMG_4035.mp4',
-        comments: [
-          DishComment(author: 'Ирина', rating: 5, text: 'Лучший Цезарь в городе'),
-        ],
       ),
       Dish(
         id: 4,
@@ -55,9 +47,6 @@ class MockMenuRepository {
         fat: 16,
         carbs: 18,
         videoUrl: 'assets/videos/IMG_4036.mp4',
-        comments: [
-          DishComment(author: 'Елена', rating: 5, text: 'Необычное сочетание!'),
-        ],
       ),
       Dish(
         id: 5,
@@ -72,9 +61,6 @@ class MockMenuRepository {
         fat: 42,
         carbs: 2,
         videoUrl: 'assets/videos/IMG_4037.mp4',
-        comments: [
-          DishComment(author: 'Борис', rating: 5, text: 'Тает во рту, идеальная прожарка'),
-        ],
       ),
       Dish(
         id: 13,
@@ -89,18 +75,12 @@ class MockMenuRepository {
         fat: 0,
         carbs: 4,
         videoUrl: 'assets/videos/2026-02-12 16.39.35.mp4',
-        comments: [
-          DishComment(author: 'Рустам', rating: 5, text: 'Прекрасное вино для мяса'),
-        ],
       ),
-      // Здесь можно добавить остальные блюда из макета по мере необходимости
     ];
   }
 
-  // Метод для получения "Сезонных" блюд для главной страницы
   Future<List<Dish>> getSeasonalDishes() async {
     final allDishes = await getDishes();
-    // Возвращаем конкретные ID, как указано в v1.html
     return allDishes.where((dish) => [1, 4, 13].contains(dish.id)).toList();
   }
 }
