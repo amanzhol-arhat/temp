@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:piligrim/features/menu/widgets/menu_screen.dart';
+import 'package:piligrim/features/menu/menu_screen.dart';
 import '../../core/constants.dart';
 import '../../core/widgets/floating_totems_background.dart';
 import 'package:piligrim/features/home/home_screen.dart';

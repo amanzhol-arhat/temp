@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import '../../core/widgets/floating_totems_background.dart';
 
@@ -103,6 +104,7 @@ class _StatusAndConceptWidget extends StatelessWidget {
                 style: TextStyle(
                   color: primaryColor,
                   fontSize: 14,
+                  fontWeight: FontWeight.w300,
                   fontFamily: 'Museo Sans',
                 ),
               ),
@@ -145,7 +147,7 @@ class _ActionButtons extends StatelessWidget {
                 'Забронировать стол',
                 style: TextStyle(
                   fontSize: 16,
-                  fontWeight: FontWeight.bold,
+                  fontWeight: FontWeight.w700,
                   fontFamily: 'Museo Sans',
                 ),
               ),
@@ -171,7 +173,7 @@ class _ActionButtons extends StatelessWidget {
                 'Меню',
                 style: TextStyle(
                   fontSize: 16,
-                  fontWeight: FontWeight.bold,
+                  fontWeight: FontWeight.w700,
                   fontFamily: 'Museo Sans',
                 ),
               ),
@@ -190,6 +192,7 @@ class _ActionButtons extends StatelessWidget {
               'Как добраться',
               style: TextStyle(
                 fontSize: 14,
+                fontWeight: FontWeight.w300,
                 fontFamily: 'Museo Sans',
               ),
             ),
@@ -199,3 +202,4 @@ class _ActionButtons extends StatelessWidget {
     );
   }
 }
+
