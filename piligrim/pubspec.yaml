@@ -13,6 +13,7 @@ dependencies:
   flutter_svg: ^2.0.10
   flutter_riverpod: ^2.4.9 #библиотека управления состоянием (state management) и внедрения зависимостей (DI)
   video_player: ^2.9.2      # Воспроизведение видео (TikTok-карточки меню)
+  flutter_animate: ^4.5.0   # Декларативные анимации (сплэш, переходы)
 
   cupertino_icons: ^1.0.8
 
